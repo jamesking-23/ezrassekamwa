@@ -84,6 +84,11 @@ html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
 [data-framer-name="Interactive photo notebook"]{max-width:100%;overflow:hidden!important}
 [data-framer-name="Interactive photo notebook"]{touch-action:pan-y}
 [data-framer-name="Interactive photo notebook"] img{max-width:none}
+/* tighter spacing now that the caption row is gone */
+[data-framer-name="Personal portfolio"]{height:16px!important;padding:0!important}
+@media (min-width:1200px){[data-framer-name="Portrait and photo notebook"]{height:880px!important}}
+/* captions ("The Visual Notebook / 18 Frames", "Drag / Scroll / Repeat") removed */
+[data-framer-name="Interactive photo notebook"] span{display:none!important}
 img[src*="assets/photos/"]{object-fit:cover;object-position:50% 22%!important}
 
 /* ==========================================================================
@@ -120,11 +125,7 @@ img[src*="assets/photos/"]{object-fit:cover;object-position:50% 22%!important}
     margin:-22vw 0 0!important;      /* pull the fan up so it overlaps the base of the portrait (images only, no text) */
     flex:none;overflow:hidden!important}
 
-  /* 2e. caption row under the fan stays on one line */
-  [data-framer-name="Interactive photo notebook"] span{
-    font-size:clamp(7px,2.1vw,10px)!important;letter-spacing:.06em!important;white-space:nowrap!important}
-
-  /* 2f. spacer after the notebook (also the #portfolio anchor target) */
+  /* 2e. spacer after the notebook (also the #portfolio anchor target) */
   [data-framer-name="Personal portfolio"]{height:16px!important;padding:0!important}
 
   img,video,svg{max-width:100%}
