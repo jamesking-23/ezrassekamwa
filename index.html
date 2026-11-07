@@ -72,26 +72,62 @@ new MutationObserver(function(ms){ms.forEach(function(m){var t=m.target;if(t.tag
 @media (min-width: 1200px) { .hidden-72rtr7 { display: none !important; } }
 @media (min-width: 810px) and (max-width: 1199.98px) { .hidden-1e5vlx1 { display: none !important; } }
 @media (max-width: 809.98px) { .hidden-mfef0m { display: none !important; } }
-</style><meta name="generator" content="NoCodeExport (nocodeexport.com)"><style id="mobile-fix">
-/* Contain the photo-notebook animation so nothing can widen the page on phones */
+</style><meta name="generator" content="NoCodeExport (nocodeexport.com)"><style id="site-layout">
+/* ==========================================================================
+   1. BASE / DESKTOP  (applies to every width; Framer's own rules supply the
+      desktop positioning: notebook is absolutely placed over the portrait)
+   ========================================================================== */
 html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
 @supports (overflow:clip){html,body{overflow-x:clip}}
-[data-framer-name="Portrait and photo notebook"],[data-framer-name="Portrait introduction"],[data-framer-name="Interactive photo notebook"]{max-width:100%;overflow:hidden!important}
-[data-framer-name="Interactive photo notebook"]{left:0;right:0;width:100%!important;touch-action:pan-y}
+[data-framer-name="Portrait and photo notebook"],
+[data-framer-name="Portrait introduction"],
+[data-framer-name="Interactive photo notebook"]{max-width:100%;overflow:hidden!important}
+[data-framer-name="Interactive photo notebook"]{touch-action:pan-y}
 [data-framer-name="Interactive photo notebook"] img{max-width:none}
 img[src*="assets/photos/"]{object-fit:cover;object-position:50% 22%!important}
+
+/* ==========================================================================
+   2. MOBILE  (<= 768px) — dedicated layout, not a scaled-down desktop.
+      Everything stacks in normal document flow:
+        [ portrait ]  ->  [ photo notebook ]  ->  about  ->  contact
+      Desktop absolute positioning, offsets, transforms and pixel sizes are
+      reset here; sizes are fluid (%, vw, aspect-ratio).
+   ========================================================================== */
 @media (max-width:768px){
+  /* 2a. wrapper: grows with its content instead of a fixed 840px stage */
+  [data-framer-name="Portrait and photo notebook"]{
+    height:auto!important;display:flex;flex-direction:column;align-items:stretch}
+
+  /* 2b. portrait: height comes from the image's aspect ratio (name never clips) */
+  [data-framer-name="Portrait introduction"]{
+    width:100%!important;height:auto!important;aspect-ratio:880/700;flex:none}
+  [data-framer-name="Portrait introduction"] img{object-position:50% 42.7%!important}
+
+  /* 2c. nav hotspots over the baked-in nav text: proportional, not pixel-fixed */
+  [data-framer-name$="image link"]{
+    position:absolute!important;right:auto!important;bottom:auto!important;transform:none!important;
+    top:30.5%!important;height:8%!important}
+  [data-framer-name="Portfolio image link"]{left:60.8%!important;width:11.6%!important}
+  [data-framer-name="Résumé image link"]{left:73.9%!important;width:8.5%!important}
+  [data-framer-name="LinkedIn image link"]{left:83.3%!important;width:10.7%!important}
+
+  /* 2d. photo notebook: back into normal flow */
+  [data-framer-name="Interactive photo notebook"]{
+    position:relative!important;top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;
+    transform:none!important;
+    width:100%!important;max-width:100%!important;
+    height:75vw!important;           /* dedicated mobile height: scales with the screen */
+    margin:-6vw 0 0!important;       /* tuck under the portrait's empty base; no overlap with text */
+    flex:none;overflow:hidden!important}
+
+  /* 2e. caption row under the fan stays on one line */
+  [data-framer-name="Interactive photo notebook"] span{
+    font-size:clamp(7px,2.1vw,10px)!important;letter-spacing:.06em!important;white-space:nowrap!important}
+
+  /* 2f. spacer after the notebook (also the #portfolio anchor target) */
+  [data-framer-name="Personal portfolio"]{height:16px!important;padding:0!important}
+
   img,video,svg{max-width:100%}
-  [data-framer-name="Interactive photo notebook"] span{font-size:clamp(7px,2.1vw,10px)!important;letter-spacing:.06em!important;white-space:nowrap!important}
-}
-@media (max-width:390px){
-  [data-framer-name="Portrait introduction"]{height:132.8vw!important}
-  [data-framer-name="Interactive photo notebook"]{top:calc(300px - max(0px,518px - 132.8vw))!important}
-  [data-framer-name="Portrait and photo notebook"]{height:calc(840px - max(0px,518px - 132.8vw))!important}
-  [data-framer-name$="image link"]{top:36.3%!important;height:5.4%!important;right:auto!important;transform:none!important}
-  [data-framer-name="Portfolio image link"]{left:60.8%!important;width:12%!important}
-  [data-framer-name="Résumé image link"]{left:73.8%!important;width:8.5%!important}
-  [data-framer-name="LinkedIn image link"]{left:83.3%!important;width:10.8%!important}
 }
 </style></head>
 <body>
