@@ -58,6 +58,7 @@ input[type=range]{width:100%}
 
 <section id="t-home">
 <div class="card"><h2>About section</h2><div id="f-about"></div></div>
+<div class="card"><h2>Section 02 — Code as a creative material</h2><div id="f-code"></div></div>
 <div class="card"><h2>Footer</h2><div id="f-footer"></div></div>
 <div class="card"><h2>Hero portrait image</h2>
 <p class="hint">Replaces the large portrait at the top. Note: the current portrait has the name and title built into the picture, so a new image should include any text you want shown.</p>
@@ -118,11 +119,12 @@ function field(obj,key,label,multi){var w=el('div'),i=el(multi?'textarea':'input
 function fields(box,obj,defs){box.innerHTML='';defs.forEach(function(d){box.appendChild(field(obj,d[0],d[1],d[2]))})}
 /* ---------- home ---------- */
 var ABOUT=[['num','Number'],['label','Label'],['script','Handwritten words'],['title','Heading'],['text','Paragraph',1]];
+var CODE=[['num','Number'],['label','Label'],['title','Heading'],['text','Paragraph',1],['t1','Point 1 title'],['d1','Point 1 text'],['t2','Point 2 title'],['d2','Point 2 text'],['t3','Point 3 title'],['d3','Point 3 text']];
 var FOOTER=[['heading','Heading'],['lede','Intro text',1],['linkedin','LinkedIn URL'],['whatsapp','WhatsApp number (digits, with country code)'],['email','Email address'],['role','Role line'],['copyright','Copyright line']];
 $('saveHome').onclick=function(){var b=this;b.disabled=true;say('homeMsg','Saving…',1);
- Promise.all(['about','footer','hero'].map(function(k){return putContent(k,content[k])})).then(function(){cacheContent();say('homeMsg','Saved. Refresh the site to see it.',1)}).catch(function(e){say('homeMsg',e.message)}).then(function(){b.disabled=false})};
+ Promise.all(['about','code','footer','hero'].map(function(k){return putContent(k,content[k])})).then(function(){cacheContent();say('homeMsg','Saved. Refresh the site to see it.',1)}).catch(function(e){say('homeMsg',e.message)}).then(function(){b.disabled=false})};
 function putContent(k,v){return authed('/rest/v1/site_content?on_conflict=key',{method:'POST',body:JSON.stringify([{key:k,value:v,updated_at:new Date().toISOString()}]),headers:{Prefer:'resolution=merge-duplicates,return=minimal'}})}
-function cacheContent(){try{localStorage.setItem('ezra_content_v1',JSON.stringify({about:content.about,footer:content.footer,hero:content.hero}))}catch(e){}}
+function cacheContent(){try{localStorage.setItem('ezra_content_v1',JSON.stringify({about:content.about,code:content.code,footer:content.footer,hero:content.hero}))}catch(e){}}
 $('heroFile').onchange=function(){var f=this.files[0];if(!f)return;say('heroMsg','Uploading…',1);upload(f,1800).then(function(u){content.hero={image:u};say('heroMsg','Uploaded. Press “Save changes” to publish.',1)}).catch(function(e){say('heroMsg',e.message)})};
 $('heroReset').onclick=function(){content.hero={image:null};say('heroMsg','Will reset to the original. Press “Save changes”.',1)};
 /* ---------- photos ---------- */
@@ -187,9 +189,9 @@ function boot(){
  authed('/rest/v1/rpc/is_owner',{method:'POST',body:'{}'}).then(function(ok){
   if(ok!==true){show('deny');return}
   return CMS.loadPublic().then(function(r){content=r.content||{};
-   content.about=content.about||{};content.footer=content.footer||{};content.hero=content.hero||{image:null};content.resume=content.resume||{};
+   content.about=content.about||{};content.footer=content.footer||{};content.code=content.code||{};content.hero=content.hero||{image:null};content.resume=content.resume||{};
    photos=(r.photos||[]).map(function(p){var n=norm(p);n._saved=true;return n});
-   fields($('f-about'),content.about,ABOUT);fields($('f-footer'),content.footer,FOOTER);drawPhotos();drawResume();show('app')})
+   fields($('f-about'),content.about,ABOUT);fields($('f-code'),content.code,CODE);fields($('f-footer'),content.footer,FOOTER);drawPhotos();drawResume();show('app')})
  }).catch(function(e){if(e.status===401||/Signed out|refresh|JWT|expired/i.test(e.message)){S=null;try{localStorage.removeItem(SK)}catch(x){}show('login')}else{show('login');say('lmsg',e.message)}})}
 try{S=JSON.parse(localStorage.getItem(SK))}catch(e){}
 if(S&&S.refresh)boot();else show('login');
