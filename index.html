@@ -1,16 +1,33 @@
 <!DOCTYPE html><html dir="ltr" lang="en-US"><head><script id="keep-base">(function(){
-/* Framer's router rewrites the address bar to "/" (the site root), which on a GitHub project site
-   is a different place, so Back and reload left /ezrassekamwa/. Keep every history URL under this
-   project's folder. Runs first, before any Framer code. */
+/* Framer's client-side router still knows an old "Resume" page from the original Framer project
+   (stale placeholder text) and rewrites the address bar to "/" or "/resume". This runs before any
+   Framer code and:
+   1) keeps every history URL under this project's folder,
+   2) turns any Framer attempt to open its own /resume route into a real visit to resume.html,
+   3) if the stale Framer page ever renders anyway, resets to the clean home page. */
 var p=location.pathname,b=/\/$/.test(p)?p:(/\.[a-z0-9]+$/i.test(p.split("/").pop())?p.slice(0,p.lastIndexOf("/")+1):p+"/");
 if(b==="/")return;
+var RES=b+"resume.html";
+function once(){try{var t=+sessionStorage.getItem("kb-fix")||0;if(Date.now()-t<5000)return false;sessionStorage.setItem("kb-fix",String(Date.now()))}catch(e){}return true}
+function isResume(q){return /(^|\/)resume(\.html)?\/?$/i.test(q)}
 ["pushState","replaceState"].forEach(function(m){
   var o=history[m];
   history[m]=function(st,t,u){
-    if(u!=null&&u!==""){try{var x=new URL(u,location.href);if(x.origin===location.origin&&x.pathname==="/"){x.pathname=b;u=x.pathname+x.search+x.hash}}catch(e){}}
+    if(u!=null&&u!==""){try{
+      var x=new URL(u,location.href);
+      if(x.origin===location.origin){
+        if(isResume(x.pathname)){if(once()){m==="pushState"?location.assign(RES):location.replace(RES)}return}
+        if(x.pathname==="/"){x.pathname=b;u=x.pathname+x.search+x.hash}
+      }
+    }catch(e){}}
     return o.call(this,st,t,u);
   };
 });
+var q=0;
+function stale(){var el=document.getElementById("main");return!!el&&/Back to portfolio|CV is supplied/i.test(el.textContent||"")}
+function check(){q=0;if(stale()&&once())location.replace(b)}
+new MutationObserver(function(){if(!q)q=requestAnimationFrame(check)}).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+addEventListener("pageshow",check);
 })();</script><script id="photo-map">(function(){
 var re=/^https:\/\/picsum\.photos\/seed\/ezra(\d+)\//,P=null,H=null;
 try{P=JSON.parse(localStorage.getItem("ezra_photos_v1"));var c=JSON.parse(localStorage.getItem("ezra_content_v1"));H=c&&c.hero&&c.hero.image||null}catch(e){}
