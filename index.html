@@ -232,7 +232,7 @@ html.about-swapped [data-framer-name="About Ezra"],html.about-swapped [data-fram
   .site-footer .ft-link{font-size:26px}
   .site-footer .ft-bottom{grid-template-columns:1fr;row-gap:12px;margin-top:56px}
 }
-</style></head>
+</style><link rel="stylesheet" href="motion.css"></head>
 <body>
 	
 	<!-- Start of bodyStart -->
@@ -331,4 +331,4 @@ if(window.CMS){CMS.loadPublic().then(function(r){if(!r)return;var ch=false,nc=r.
  var np=JSON.stringify(ph);if(ph.length&&np!==old){var isDef=!old&&ph.every(function(p,i){return p.url==="assets/photos/"+("0"+(i+1)).slice(-2)+".jpg"&&+p.fx===50&&+p.fy===22&&+p.zoom===1});try{localStorage.setItem("ezra_photos_v1",np)}catch(x){}if(!isDef)ch=true}
  if(ch&&!sessionStorage.getItem("ezra_rl")){try{sessionStorage.setItem("ezra_rl","1")}catch(x){}location.reload()}else if(!ch){try{sessionStorage.removeItem("ezra_rl")}catch(x){}}
 }).catch(function(){})}
-})();</script></body></html>
+})();</script><script src="motion.js"></script></body></html>
