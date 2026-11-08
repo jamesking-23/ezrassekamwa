@@ -215,19 +215,29 @@ html.about-swapped [data-framer-name="About Ezra"],html.about-swapped [data-fram
 
 <script id="resume-link">(function(){
 /* Registered BEFORE nce-runtime.js so its capture-phase click handler runs first and
-   Framer's href reset (javascript:void(0)) can't swallow the hero Resume button. */
-function hit(el){
+   Framer's href reset (javascript:void(0)) can't swallow the Resume buttons.
+   Framer's router later rewrites the address bar to "/", which breaks relative links on a
+   project-site URL (/ezrassekamwa/), so resolve against the runtime script's own URL,
+   which the browser fixed when the page was parsed. */
+var rs=document.querySelector('script[src$="nce-runtime.js"]');
+var BASE=rs&&rs.src?rs.src:document.baseURI;
+function to(name){return new URL(name,BASE).href}
+function pageOf(el){
   if(!el||!el.closest)return null;
   var a=el.closest('[data-framer-name="Résumé image link"],a[aria-label="Résumé"],a[data-framer-name*="sum"]');
-  if(a)return a;
+  if(a)return"resume.html";
   var l=el.closest('a,button,[role="link"],[role="button"]');
-  if(l&&!l.closest('#site-footer')&&/^\s*r[eé]sum[eé]\s*$/i.test(l.textContent||''))return l;
+  if(!l)return null;
+  var h=(l.getAttribute&&l.getAttribute("href")||"").replace(/^\.\//,"");
+  if(h==="resume.html"||h==="admin.html")return h;
+  if(!l.closest('#site-footer')&&/^\s*r[eé]sum[eé]\s*$/i.test(l.textContent||''))return"resume.html";
   return null;
 }
 document.addEventListener("click",function(ev){
   if(ev.button>0||ev.metaKey||ev.ctrlKey||ev.shiftKey)return;
-  if(!hit(ev.target))return;
-  ev.preventDefault();ev.stopImmediatePropagation();location.href="resume.html";
+  var p=pageOf(ev.target);
+  if(!p)return;
+  ev.preventDefault();ev.stopImmediatePropagation();location.href=to(p);
 },true);
 })();</script><script>window.__NCE_PAGE__={path:"/",root:"./"};</script><script src="./nce-runtime.js"></script><script data-nce-file-notice>(function(){if(location.protocol!=="file:")return;function show(){if(document.getElementById("nce-file-notice"))return;var d=document.createElement("div");d.id="nce-file-notice";d.setAttribute("role","alert");d.style.cssText="position:fixed;left:16px;right:16px;bottom:16px;z-index:2147483647;max-width:560px;margin:0 auto;box-sizing:border-box;padding:16px 48px 16px 16px;border-radius:12px;background:#0f172a;color:#f8fafc;font:14px/1.5 -apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.35);text-align:left";d.innerHTML="<strong style=\"display:block;font-size:15px;margin:0 0 4px\">Open this site with a web server</strong>Your browser blocks this page’s scripts and images when it is opened straight from a folder, so parts of it are missing. Close this tab and double-click <b>Start website</b> in the same folder, or <a href=\"https://www.nocodeexport.com/en/blog/run-exported-site-locally\" target=\"_blank\" rel=\"noopener\" style=\"color:#5eead4;text-decoration:underline\">see how (2 minutes)</a>.<button type=\"button\" aria-label=\"Dismiss\" style=\"position:absolute;top:8px;right:8px;width:32px;height:32px;border:0;border-radius:8px;background:transparent;color:#cbd5e1;font-size:20px;line-height:1;cursor:pointer\">&times;</button>";d.querySelector("button").onclick=function(){d.parentNode.removeChild(d)};document.body.appendChild(d)}if(document.body)show();else document.addEventListener("DOMContentLoaded",show)})();</script><script src="cms.js"></script><script id="about-swap-script">(function(){
 var HTML='<section class="ab" id="about-swap"><div class="ab-inner"><p class="ab-label"><span data-c="a.num">01</span> / <span data-c="a.label">Engineer by training.</span> <span class="ab-script" data-c="a.script">curious by design</span></p><div class="ab-grid"><h2 class="ab-title" data-c="a.title">Built on logic. Moved by imagination.</h2><p class="ab-text" data-c="a.text">I\u2019m Ezra J.L. Ssekamwa, a civil engineer with a mind that rarely stays in one lane. I\u2019m drawn to the structures that shape our world\u2014and the code, intelligence, and creativity that could reshape it.</p></div></div></section>';
