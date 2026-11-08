@@ -1,4 +1,4 @@
-<!DOCTYPE html><html dir="ltr" lang="en-US"><head><script id="keep-base">(function(){
+<!DOCTYPE html><html dir="ltr" lang="en-US"><head><style id="own-resume">a[data-framer-name="Résumé image link"]:not([data-own]){display:none!important}a[data-framer-name="Résumé image link"][data-own]{cursor:pointer!important;pointer-events:auto!important}</style><script id="keep-base">(function(){
 /* Framer's client-side router still knows an old "Resume" page from the original Framer project
    (stale placeholder text) and rewrites the address bar to "/" or "/resume". This runs before any
    Framer code and:
@@ -243,7 +243,28 @@ html.about-swapped [data-framer-name="About Ezra"],html.about-swapped [data-fram
     <!-- End of bodyEnd -->
 
 
-<script id="resume-link">(function(){
+<script id="own-resume-link">(function(){
+/* The "Résumé" words are part of the portrait image; the clickable area over them was a Framer link
+   whose press handler opens Framer's stale /resume route and pollutes history. Replace it with a plain
+   link Framer knows nothing about. It is a clone of the hotspot so it keeps the identical size/position. */
+var rs=document.querySelector('script[src$="nce-runtime.js"]');
+var HREF=new URL("resume.html",rs&&rs.src?rs.src:document.baseURI).href;
+var q=0;
+function mount(){
+  q=0;
+  document.querySelectorAll('a[data-framer-name="Résumé image link"]:not([data-own])').forEach(function(a){
+    var n=a.nextElementSibling;if(n&&n.hasAttribute("data-own"))return;
+    var c=a.cloneNode(false);
+    c.setAttribute("data-own","");c.setAttribute("href",HREF);
+    c.removeAttribute("style");c.removeAttribute("target");
+    a.parentNode.insertBefore(c,a.nextSibling);
+  });
+}
+function soon(){if(!q)q=requestAnimationFrame(mount)}
+mount();
+document.addEventListener("DOMContentLoaded",mount);addEventListener("load",mount);
+new MutationObserver(soon).observe(document.documentElement,{childList:true,subtree:true});
+})();</script><script id="resume-link">(function(){
 /* Registered BEFORE nce-runtime.js so its capture-phase click handler runs first and
    Framer's href reset (javascript:void(0)) can't swallow the Resume buttons.
    Framer's router later rewrites the address bar to "/", which breaks relative links on a
@@ -254,6 +275,7 @@ var BASE=rs&&rs.src?rs.src:document.baseURI;
 function to(name){return new URL(name,BASE).href}
 function pageOf(el){
   if(!el||!el.closest)return null;
+  if(el.closest("[data-own]"))return null;
   var a=el.closest('[data-framer-name="Résumé image link"],a[aria-label="Résumé"],a[data-framer-name*="sum"]');
   if(a)return"resume.html";
   var l=el.closest('a,button,[role="link"],[role="button"]');
