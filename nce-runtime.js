@@ -19,7 +19,7 @@
     // A link to one of the site's files (a PDF, a photo a gallery opens) is
     // no page: the server-side pass leaves it alone (isInternalResourcePath),
     // and so does this one.
-    var filePath = new RegExp("\\.(png|jpg|jpeg|gif|svg|css|js|pdf|ico|xml|json|txt|woff|woff2|ttf|eot|mp4|webm|mp3|webp|avif)$", "i");
+    var filePath = new RegExp("\\.(html|png|jpg|jpeg|gif|svg|css|js|pdf|ico|xml|json|txt|woff|woff2|ttf|eot|mp4|webm|mp3|webp|avif)$", "i");
     function isFileLink(url) { return filePath.test(url.pathname) || url.pathname.indexOf("/cdn-cgi/") === 0; }
 
     function normalizePath(pathname) {
