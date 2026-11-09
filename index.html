@@ -327,7 +327,7 @@ new MutationObserver(function(){var a=document.querySelector('[data-framer-name=
 
 var CK="ezra_content_v1";
 function applyC(c){if(!c)return;var m={a:c.about||{},f:c.footer||{},c:c.code||{}};
- document.querySelectorAll("[data-c]").forEach(function(el){var p=el.getAttribute("data-c").split("."),v=m[p[0]]?m[p[0]][p[1]]:null;if(typeof v==="string"&&v)el.textContent=v});
+ document.querySelectorAll("[data-c]").forEach(function(el){var p=el.getAttribute("data-c").split("."),v=m[p[0]]?m[p[0]][p[1]]:null;if(typeof v==="string"&&v)el.textContent=v.replace(/\s*I treat code the way I treat concrete and steel[\u2014-]as a material to shape, test, and build with\./,"")});
  document.querySelectorAll("[data-h]").forEach(function(el){var v=m.f[el.getAttribute("data-h").split(".")[1]],k=el.getAttribute("data-h");if(typeof v!=="string"||!v)return;
   if(k==="f.linkedin"&&/^https?:\/\//i.test(v))el.href=v;else if(k==="f.whatsapp"&&/^\+?\d{6,15}$/.test(v))el.href="https://wa.me/"+v.replace("+","");else if(k==="f.email"&&/^[^\s@<>"]+@[^\s@<>"]+$/.test(v))el.href="mailto:"+v})}
 var cached=null;try{cached=JSON.parse(localStorage.getItem(CK))}catch(x){}
