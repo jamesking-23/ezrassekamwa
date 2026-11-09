@@ -125,6 +125,7 @@ html,body{max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
 [data-framer-name="Interactive photo notebook"]{max-width:100%;overflow:hidden!important}
 [data-framer-name="Interactive photo notebook"]{touch-action:pan-y;transform:scale(1.5);transform-origin:center center;position:relative;z-index:5}
 @media (max-width:768px){[data-framer-name="Interactive photo notebook"]{transform:scale(1.2)}[data-framer-name="Portrait and photo notebook"]{margin-bottom:-22vw!important}}
+[data-framer-name="Portrait and photo notebook"]{overflow-x:hidden;overflow-x:clip!important;overflow-y:visible}
 [data-framer-name="Interactive photo notebook"] img{max-width:none}
 /* photo cards: white border + pronounced shadow along the bottom edge */
 [data-framer-name="Interactive photo notebook"] button{border:2px solid #fff!important;box-shadow:0 16px 18px -8px rgba(0,0,0,.55),0 4px 6px rgba(0,0,0,.12)!important}
@@ -182,11 +183,9 @@ img[src*="assets/photos/"]{object-fit:cover;object-position:50% 22%!important}
 html.about-swapped [data-framer-name="About Ezra"],html.about-swapped [data-framer-name="Get in touch"]{display:none!important}
 .ab{width:100%;background:#111214;color:#f2f0ea;font-family:"Outfit","Helvetica Neue",Arial,sans-serif;padding:96px 48px 104px;box-shadow:0 12px 0 0 #111214}
 .ab{position:relative;z-index:1}
-#about-swap{padding-bottom:calc(var(--ov2,120px) + 24px);margin-bottom:-40px;--ov2:120px}
-@media (max-width:768px){#about-swap{--ov2:80px}}
-.ab2{--ov:120px;position:relative;z-index:10;background:#fff;color:#111214;margin-top:-120px;padding:140px 48px 0;border-top-left-radius:32px;border-top-right-radius:32px;box-shadow:0 -20px 40px rgba(0,0,0,.05);will-change:transform;transform:translate3d(0,var(--ab2-y,0px),0)}
-.ab2::before{content:"";position:absolute;top:-90px;left:0;right:0;height:100px;background:radial-gradient(circle 60px at 15% 70%,rgba(255,255,255,.95) 0,rgba(255,255,255,0) 100%),radial-gradient(circle 80px at 38% 50%,rgba(255,255,255,.9) 0,rgba(255,255,255,0) 100%),radial-gradient(circle 70px at 62% 60%,rgba(255,255,255,.95) 0,rgba(255,255,255,0) 100%),radial-gradient(circle 90px at 85% 45%,rgba(255,255,255,.9) 0,rgba(255,255,255,0) 100%),linear-gradient(to bottom,rgba(255,255,255,0) 0,#fff 60%);filter:blur(12px);pointer-events:none;z-index:11}
-.ab2 .ab-inner{border-top:0;padding:48px 0 104px}
+.ab2{position:relative;z-index:10;background:#fff;color:#111214;margin-top:0;padding:96px 48px 0;border:0;border-radius:0;box-shadow:none;will-change:transform;transform:translate3d(0,var(--ab2-y,0px),0)}
+.ab2::before{content:"";position:absolute;top:-120px;left:-40px;right:-40px;width:auto;height:190px;background:radial-gradient(circle 70px at 12% 62%,rgba(255,255,255,.95) 0,rgba(255,255,255,0) 100%),radial-gradient(circle 90px at 32% 45%,rgba(255,255,255,.92) 0,rgba(255,255,255,0) 100%),radial-gradient(circle 80px at 55% 58%,rgba(255,255,255,.95) 0,rgba(255,255,255,0) 100%),radial-gradient(circle 100px at 78% 42%,rgba(255,255,255,.9) 0,rgba(255,255,255,0) 100%),radial-gradient(circle 70px at 95% 60%,rgba(255,255,255,.95) 0,rgba(255,255,255,0) 100%),linear-gradient(to bottom,rgba(255,255,255,0) 0,rgba(255,255,255,.7) 22%,#fff 46%,#fff 100%);filter:blur(16px);pointer-events:none;z-index:11}
+.ab2 .ab-inner{border-top:0;padding:0 0 104px}
 .ab2 .ab-grid{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}
 .ab2 .ab-label{color:#6b6d72}.ab2 .ab-title{color:#111214}.ab2 .ab-text{color:#4a4c52}
 .ab-caps{list-style:none;margin:72px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:clamp(24px,4vw,56px);font-family:"Outfit","Helvetica Neue",Arial,sans-serif}
@@ -194,8 +193,8 @@ html.about-swapped [data-framer-name="About Ezra"],html.about-swapped [data-fram
 .ab-caps b{display:block;font:500 11px/1 "IBM Plex Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;color:#8a8c92;margin-bottom:14px}
 .ab-caps span{display:block;font-size:clamp(18px,1.6vw,22px);line-height:1.3;font-weight:500;color:#111214}
 .ab-caps em{display:block;font-style:normal;margin-top:6px;font-size:15px;line-height:1.5;color:#5d5f66}
-@media (max-width:768px){.ab2{--ov:80px;margin-top:-80px;padding:100px 24px 0;border-radius:32px 32px 0 0}.ab2 .ab-inner{padding:32px 0 72px}.ab2 .ab-grid{grid-template-columns:1fr}.ab-caps{grid-template-columns:1fr;margin-top:40px;row-gap:22px}}
-@media (prefers-reduced-motion:reduce){.ab2{margin-top:0;transform:none;will-change:auto;padding-top:64px}.ab2::before{display:none}#about-swap{margin-bottom:0}}
+@media (max-width:768px){.ab2{padding:64px 24px 0}.ab2 .ab-inner{padding:32px 0 72px}.ab2 .ab-grid{grid-template-columns:1fr}.ab-caps{grid-template-columns:1fr;margin-top:40px;row-gap:22px}}
+@media (prefers-reduced-motion:reduce){.ab2{transform:none;will-change:auto}.ab2::before{display:none}}
 .ab-inner{max-width:1200px;margin:0 auto}
 .ab-label{margin:0 0 40px;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#8d8e92;display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .6em}
 .ab-script{font-family:"Nothing You Could Do",cursive;font-style:normal;font-size:24px;font-weight:400;letter-spacing:0;text-transform:none;color:#d9d6cd;line-height:1}
@@ -342,8 +341,8 @@ if(window.CMS){CMS.loadPublic().then(function(r){if(!r)return;var ch=false,nc=r.
 (function(){var mq=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)"),el=null,tk=false,last=null;
 function upd(){tk=false;el=el&&el.isConnected?el:document.getElementById("about-swap-2");if(!el)return;
  if(mq&&mq.matches){if(last!==0){el.style.setProperty("--ab2-y","0px");last=0}return}
- var vh=window.innerHeight,r=el.getBoundingClientRect(),y0=parseFloat(el.style.getPropertyValue("--ab2-y"))||0,top=r.top-y0,
- p=Math.max(0,Math.min(1,(vh-top)/(vh*0.6))),d=Math.round((1-p)*Math.min(90,vh*0.11)*10)/10;
+ var vh=window.innerHeight,r=el.getBoundingClientRect(),y0=parseFloat(el.style.getPropertyValue("--ab2-y"))||0,top=r.top-y0,bot=r.bottom-y0,mx=vh<700||innerWidth<769?90:130,
+ pin=Math.max(0,Math.min(1,(vh-top)/(vh*0.7))),pout=Math.max(0,Math.min(1,(bot-vh)/(vh*0.5))),d=Math.round(-pin*pout*mx*10)/10;
  if(d!==last){el.style.setProperty("--ab2-y",d+"px");last=d}}
 function req(){if(!tk){tk=true;requestAnimationFrame(upd)}}
 addEventListener("scroll",req,{passive:true});addEventListener("resize",req);setInterval(req,500);req()})();
