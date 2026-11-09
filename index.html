@@ -230,7 +230,7 @@ html.about-swapped [data-framer-name="About Ezra"],html.about-swapped [data-fram
 .site-footer .ft-link:hover .ft-arr{transform:translate(2px,-2px)}
 .site-footer .ft-link:hover .ft-up{transform:translateY(-3px)}
 .site-footer .ft-link.ft-top{margin-top:18px}
-.site-footer .ft-door{justify-self:end;line-height:0}.site-footer .ft-door a{display:inline-block;padding:6px;margin:-6px;color:#6e625b;opacity:.45;transition:opacity .2s}.site-footer .ft-door a:hover,.site-footer .ft-door a:focus-visible{opacity:.9}.site-footer .ft-door svg{width:16px;height:16px;display:block}
+.site-footer .ft-bottom [data-c="f.copyright"]{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 .site-footer .ft-bottom{display:grid;grid-template-columns:2fr 1fr 1fr;margin-top:52px;font:400 11px/1.2 "IBM Plex Mono",ui-monospace,Menlo,monospace;letter-spacing:.04em;text-transform:uppercase;color:#6e625b}
 @media (max-width:768px){
   .site-footer{padding:60px 20px 14px}
@@ -286,6 +286,31 @@ function soon(){if(!q)q=requestAnimationFrame(mount)}
 mount();
 document.addEventListener("DOMContentLoaded",mount);addEventListener("load",mount);
 new MutationObserver(soon).observe(document.documentElement,{childList:true,subtree:true});
+})();</script><script id="secret-door">(function(){
+/* The (c) in the footer copyright line is the way into the site editor: tap/click it 10 times,
+   each tap within 1.6 s of the previous one. Nothing on the page hints at it. */
+var rs=document.querySelector('script[src$="nce-runtime.js"]'),BASE=rs&&rs.src?rs.src:document.baseURI,NEED=10,GAP=1600,n=0,t=0;
+function hitSymbol(e){
+  var el=e.target&&e.target.closest&&e.target.closest('#site-footer [data-c="f.copyright"]');
+  if(!el)return false;
+  var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),node;
+  while((node=w.nextNode())){
+    var i=node.data.indexOf("\u00a9");
+    if(i<0)continue;
+    var r=document.createRange();r.setStart(node,i);r.setEnd(node,i+1);
+    var b=r.getBoundingClientRect(),pad=7;                 /* a little forgiveness for thumbs */
+    return e.clientX>=b.left-pad&&e.clientX<=b.right+pad&&e.clientY>=b.top-pad&&e.clientY<=b.bottom+pad;
+  }
+  return false;
+}
+document.addEventListener("click",function(e){
+  if(!hitSymbol(e))return;
+  var now=Date.now();n=(now-t<GAP)?n+1:1;t=now;
+  if(n<NEED)return;
+  n=0;
+  try{history.replaceState(history.state,"",new URL("./",BASE).pathname+location.search+location.hash)}catch(x){}
+  location.href=new URL("admin.html",BASE).href;
+},false);
 })();</script><script id="resume-link">(function(){
 /* Registered BEFORE nce-runtime.js so its capture-phase click handler runs first and
    Framer's href reset (javascript:void(0)) can't swallow the Resume buttons.
@@ -317,7 +342,7 @@ document.addEventListener("click",function(ev){
 var HTML='<section class="ab" id="about-swap"><div class="ab-inner"><p class="ab-label"><span data-c="a.num">01</span> / <span data-c="a.label">Engineer by training.</span> <span class="ab-script" data-c="a.script">curious by design</span></p><div class="ab-grid"><h2 class="ab-title" data-c="a.title">Built on logic. Moved by imagination.</h2><p class="ab-text" data-c="a.text">I\u2019m Ezra J.L. Ssekamwa, a civil engineer with a mind that rarely stays in one lane. I\u2019m drawn to the structures that shape our world\u2014and the code, intelligence, and creativity that could reshape it.</p></div></div></section>';
 function hydrated(el){for(var k in el){if(k.indexOf("__reactFiber")===0)return true}return false}
 var HTML2='<section class="ab ab2" id="about-swap-2"><div class="ab-inner"><p class="ab-label"><span data-c="c.num">02</span> / <span data-c="c.label">Code as a creative material.</span></p><div class="ab-grid"><h2 class="ab-title" data-c="c.title">Always asking what else is possible.</h2><p class="ab-text" data-c="c.text">Programming and AI are where I explore new tools, untangle problems, and ask what else is possible. From small experiments to whole systems, I\u2019m after work that is useful, considered, and a little bit surprising.</p></div></div></section>';
-var FOOT='<footer class="site-footer" id="site-footer"><div class="ft-intro"><div class="ft-grid"><h2 data-c="f.heading">Good things begin with hello.</h2><p class="ft-lede" data-c="f.lede">An interesting idea, a shared curiosity, or a new challenge? I\u2019d love to hear from you.</p></div></div><div class="ft-grid ft-cols"><nav class="ft-col" aria-label="Footer"><h3>Navigation</h3><a class="ft-link" href="#portfolio">Portfolio</a><a class="ft-link" href="resume.html" data-go="resume.html">Resume</a><a class="ft-link ft-top" href="#top" data-top>Back to top <svg class="ft-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M12 20V4M5 11l7-7 7 7"/></svg></a></nav><div class="ft-col"><h3>Social</h3><a class="ft-link" data-h="f.linkedin" href="https://www.linkedin.com/in/ezra-ssekamwa-j-l-9a4709285/" target="_blank" rel="noopener">LinkedIn <svg class="ft-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a><a class="ft-link" data-h="f.whatsapp" href="https://wa.me/256784119867" target="_blank" rel="noopener">WhatsApp <svg class="ft-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div><div class="ft-col"><h3>Contact</h3><a class="ft-link" data-h="f.email" href="mailto:jamesezra2002@gmail.com">Email me <svg class="ft-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div></div><div class="ft-bottom"><span data-c="f.copyright">\u00a92026 Ezra J.L. Ssekamwa</span><span data-c="f.role">Civil engineer</span><span class="ft-door"><a href="admin.html" data-go="admin.html" aria-label="\u00a0" rel="nofollow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21M4 21h16"/><circle cx="14.5" cy="12.5" r=".9" fill="currentColor"/></svg></a></span></div></footer>';
+var FOOT='<footer class="site-footer" id="site-footer"><div class="ft-intro"><div class="ft-grid"><h2 data-c="f.heading">Good things begin with hello.</h2><p class="ft-lede" data-c="f.lede">An interesting idea, a shared curiosity, or a new challenge? I\u2019d love to hear from you.</p></div></div><div class="ft-grid ft-cols"><nav class="ft-col" aria-label="Footer"><h3>Navigation</h3><a class="ft-link" href="#portfolio">Portfolio</a><a class="ft-link" href="resume.html" data-go="resume.html">Resume</a><a class="ft-link ft-top" href="#top" data-top>Back to top <svg class="ft-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M12 20V4M5 11l7-7 7 7"/></svg></a></nav><div class="ft-col"><h3>Social</h3><a class="ft-link" data-h="f.linkedin" href="https://www.linkedin.com/in/ezra-ssekamwa-j-l-9a4709285/" target="_blank" rel="noopener">LinkedIn <svg class="ft-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a><a class="ft-link" data-h="f.whatsapp" href="https://wa.me/256784119867" target="_blank" rel="noopener">WhatsApp <svg class="ft-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div><div class="ft-col"><h3>Contact</h3><a class="ft-link" data-h="f.email" href="mailto:jamesezra2002@gmail.com">Email me <svg class="ft-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M6 18 18 6M8 6h10v10"/></svg></a></div></div><div class="ft-bottom"><span data-c="f.copyright">\u00a92026 Ezra J.L. Ssekamwa</span><span data-c="f.role">Civil engineer</span></div></footer>';
 function place(){var a=document.querySelector('[data-framer-name="About Ezra"]'),c=document.querySelector('[data-framer-name="Get in touch"]');if(!a||!c||!hydrated(a))return false;
  if(!document.getElementById("about-swap")){var t=document.createElement("div");t.innerHTML=HTML;a.parentNode.insertBefore(t.firstChild,a.nextSibling)}
  if(!document.getElementById("about-swap-2")){var t2=document.createElement("div");t2.innerHTML=HTML2;var b=document.getElementById("about-swap");b.parentNode.insertBefore(t2.firstChild,b.nextSibling)}
