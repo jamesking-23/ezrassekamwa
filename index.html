@@ -345,4 +345,5 @@ function upd(){tk=false;el=el&&el.isConnected?el:document.getElementById("about-
  p=Math.max(0,Math.min(1,(vh-top)/(vh*0.6))),d=Math.round((1-p)*Math.min(90,vh*0.11)*10)/10;
  if(d!==last){el.style.setProperty("--ab2-y",d+"px");last=d}}
 function req(){if(!tk){tk=true;requestAnimationFrame(upd)}}
+addEventListener("scroll",req,{passive:true});addEventListener("resize",req);setInterval(req,500);req()})();
 })();</script><script src="motion.js"></script></body></html>
