@@ -67,7 +67,7 @@
     /* legacy footer links (used when no custom columns are defined) */
     var f = m.f;
     qa("[data-h]").forEach(function (a) {
-      var k = a.getAttribute("data-h"), v = f[k], u = null;
+      var k = (a.getAttribute("data-h") || "").replace(/^f\./, ""), v = f[k], u = null;   /* markup says data-h="f.linkedin" */
       if (typeof v !== "string" || !v.trim()) return;
       if (k === "linkedin") u = /^https?:\/\//i.test(v.trim()) ? v.trim() : null;
       else if (k === "email") u = /^[^\s@<>"]+@[^\s@<>"]+$/.test(v.trim()) ? "mailto:" + v.trim() : null;
