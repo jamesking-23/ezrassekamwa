@@ -16,6 +16,7 @@
     (kids || []).forEach(function (c) { if (c != null) e.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
     return e;
   }
+  var DEF = window.SITE_DEFAULTS || {};
   function clone(o) { return o == null ? o : JSON.parse(JSON.stringify(o)); }
   function uuid() { return crypto.randomUUID ? crypto.randomUUID() : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 3 | 8)).toString(16); }); }
   function rid() { return "b" + Math.random().toString(36).slice(2, 8); }
@@ -175,7 +176,9 @@
       ctl = E(t === "area" ? "textarea" : "input", t === "area" ? { rows: s.rows || 4 } : { type: t === "num" ? "number" : "text" });
       if (s.ph) ctl.setAttribute("placeholder", s.ph);
       if (t === "num") { if (s.min != null) ctl.min = s.min; if (s.max != null) ctl.max = s.max; }
-      ctl.value = obj[key] == null ? "" : obj[key];
+      var isDef = obj[key] == null && s.dflt != null && s.dflt !== "";
+      ctl.value = obj[key] == null ? (s.dflt == null ? "" : s.dflt) : obj[key];
+      if (isDef) { var tag = E("span", { class: "chip", style: "margin-left:8px;text-transform:none;letter-spacing:0;font-weight:500" }, ["original"]); lab.appendChild(tag); ctl.addEventListener("input", function () { tag.remove(); }, { once: true }); }
       function mark() { if (t === "url") ctl.classList.toggle("bad", ctl.value.trim() !== "" && !okLink(ctl.value)); if (t === "slug") ctl.classList.toggle("bad", ctl.value !== "" && !/^[a-z][a-z0-9-]{0,30}$/.test(ctl.value)); }
       ctl.oninput = function () {
         mark();
@@ -344,14 +347,16 @@
       fields: function (w, it) { w.appendChild(F(it, "height", { type: "num", label: "Height (pixels)", min: 8, max: 400 })); } }
   };
   function secName(it) {
-    if (it.type === "about") return ["About", content.about.title];
-    if (it.type === "code") return ["Section 02", content.code.title || "Code as a creative material"];
+    if (it.type === "about") return ["About", content.about.title != null ? content.about.title : (DEF.about || {}).title];
+    if (it.type === "code") return ["Section 02", content.code.title != null ? content.code.title : (DEF.code || {}).title];
     var T = TYPES[it.type]; return [T ? T.name : it.type, it.title || (it.text ? String(it.text).slice(0, 40) : "")];
   }
   function builtinBody(it) {
-    var w = E("div"), obj = it.type === "about" ? content.about : content.code, defs = it.type === "about" ? ABOUT : CODE, holder = E("div");
+    var w = E("div"), obj = it.type === "about" ? content.about : content.code, base = it.type === "about" ? ABOUT : CODE, holder = E("div");
+    var dd = (it.type === "about" ? DEF.about : DEF.code) || {};
+    var defs = base.map(function (d) { var sp = {}; for (var k in d[1]) sp[k] = d[1][k]; sp.dflt = dd[d[0]]; return [d[0], sp]; });
     fields(holder, obj, defs); w.appendChild(holder);
-    w.appendChild(E("p", { class: "hint" }, ["An emptied field is hidden on the site. “Reset” brings back the original wording."]));
+    w.appendChild(E("p", { class: "hint" }, ["Fields marked “original” show what the site says now. Empty a field to hide it; “Reset” brings the original wording back."]));
     var rs = E("button", { class: "btn sec sm", type: "button" }, ["Reset to the original text"]);
     rs.onclick = function () { if (confirm("Reset this section to the original text?")) { Object.keys(obj).forEach(function (k) { delete obj[k]; }); fields(holder, obj, defs); changed(); } };
     w.appendChild(rs); return w;
@@ -452,8 +457,8 @@
     var c = E("div", { class: "card" }, [E("h2", {}, ["Portrait"])]);
     c.appendChild(E("p", { class: "hint" }, ["The current portrait has the name and the Portfolio / Résumé / LinkedIn words built into the picture itself, so a new image should include any text you want shown."]));
     c.appendChild(F(content.hero, "image", { type: "image", label: "Portrait image (empty = original)", max: 1800 }));
-    c.appendChild(F(content.hero, "alt", { label: "Picture description (for screen readers and search)", ph: "Illustrated portrait of Ezra J.L. Ssekamwa" }));
-    c.appendChild(F(content.hero, "linkedin", { type: "url", label: "Where the LinkedIn word in the portrait links to", hint: "Leave empty to keep the current link." }));
+    c.appendChild(F(content.hero, "alt", { label: "Picture description (for screen readers and search)", dflt: (DEF.hero || {}).alt }));
+    c.appendChild(F(content.hero, "linkedin", { type: "url", label: "Where the LinkedIn word in the portrait links to", dflt: (DEF.hero || {}).linkedin }));
     c.appendChild(E("p", { class: "hint" }, ["Portrait changes show on the live site after publishing (the preview keeps the old portrait)."]));
     box.appendChild(c);
     var c2 = E("div", { class: "card" }, [E("h2", {}, ["Photo notebook"]), E("p", { class: "hint" }, ["The first 18 photos fill the notebook cards, in this order. Use the arrows (or drag a photo) to reorder, “Crop” to choose which part is shown, “Replace” to swap the picture. Photo changes show on the live site after publishing."])]);
@@ -468,11 +473,11 @@
 
   /* =============================== FOOTER tab =============================== */
   function legacyCols(f) {
-    var wa = String(f.whatsapp || "").replace(/\D/g, "");
+    var FD = DEF.footer || {}, wa = String(f.whatsapp != null ? f.whatsapp : FD.whatsapp || "").replace(/\D/g, ""), li = f.linkedin != null ? f.linkedin : FD.linkedin, em = f.email != null ? f.email : FD.email;
     return [
       { title: "Navigation", links: [{ label: "Portfolio", url: "#portfolio" }, { label: "Resume", url: "resume.html" }, { label: "Back to top", url: "#top" }] },
-      { title: "Social", links: [{ label: "LinkedIn", url: f.linkedin || "https://www.linkedin.com/" }].concat(wa.length >= 7 ? [{ label: "WhatsApp", url: "https://wa.me/" + wa }] : []) },
-      { title: "Contact", links: f.email ? [{ label: "Email me", url: "mailto:" + f.email }] : [] }
+      { title: "Social", links: [{ label: "LinkedIn", url: li || "https://www.linkedin.com/" }].concat(wa.length >= 7 ? [{ label: "WhatsApp", url: "https://wa.me/" + wa }] : []) },
+      { title: "Contact", links: em ? [{ label: "Email me", url: "mailto:" + em }] : [] }
     ];
   }
   function linkBody(l) {
@@ -487,17 +492,18 @@
     box.appendChild(E("h2", { class: "ptitle" }, ["Footer"]));
     box.appendChild(E("p", { class: "lead" }, ["The closing section with the wavy top edge."]));
     var c = E("div", { class: "card" }, [E("h2", {}, ["Text"])]);
+    var FD = DEF.footer || {};
     c.appendChild(F(f, "show", { type: "check", label: "Show the footer", def: true }));
-    c.appendChild(F(f, "heading", { label: "Heading" })); c.appendChild(F(f, "lede", { type: "area", rows: 3, label: "Intro text", hint: FMT }));
-    c.appendChild(F(f, "role", { label: "Role line (bottom, centre)" }));
-    c.appendChild(F(f, "copyright", { label: "Copyright line", hint: "Keep the © symbol in this line: tapping it 10 times in a row is the hidden way into this editor." }));
+    c.appendChild(F(f, "heading", { label: "Heading", dflt: FD.heading })); c.appendChild(F(f, "lede", { type: "area", rows: 3, label: "Intro text", hint: FMT, dflt: FD.lede }));
+    c.appendChild(F(f, "role", { label: "Role line (bottom, centre)", dflt: FD.role }));
+    c.appendChild(F(f, "copyright", { label: "Copyright line", dflt: FD.copyright, hint: "Keep the © symbol in this line: tapping it 10 times in a row is the hidden way into this editor." }));
     box.appendChild(c);
     var c2 = E("div", { class: "card" }, [E("h2", {}, ["Links"])]);
     if (!Array.isArray(f.cols)) {
       c2.appendChild(E("p", { class: "hint" }, ["The footer currently uses its standard three columns (Navigation, Social, Contact)."]));
-      c2.appendChild(F(f, "linkedin", { type: "url", label: "LinkedIn address" }));
-      c2.appendChild(F(f, "whatsapp", { label: "WhatsApp number (digits, with country code)" }));
-      c2.appendChild(F(f, "email", { label: "Email address" }));
+      c2.appendChild(F(f, "linkedin", { type: "url", label: "LinkedIn address", dflt: FD.linkedin }));
+      c2.appendChild(F(f, "whatsapp", { label: "WhatsApp number (digits, with country code)", dflt: FD.whatsapp }));
+      c2.appendChild(F(f, "email", { label: "Email address", dflt: FD.email }));
       var cu = E("button", { class: "btn sec", type: "button", style: "margin-top:10px" }, ["Customise columns and links…"]);
       cu.onclick = function () { f.cols = legacyCols(f); f.cols.forEach(function (x) { OPEN.add(x); }); drawFooter(); changed(); }; c2.appendChild(cu);
     } else {
@@ -600,8 +606,8 @@
     var box = $("p-settings"), s = content.settings; box.textContent = "";
     box.appendChild(E("h2", { class: "ptitle" }, ["Site settings"])); box.appendChild(E("p", { class: "lead" }, ["What shows in the browser tab and in search results."]));
     var c = E("div", { class: "card" });
-    c.appendChild(F(s, "title", { label: "Browser tab title", ph: "Ezra J.L. Ssekamwa — Civil Engineer & Curious Mind" }));
-    c.appendChild(F(s, "description", { type: "area", rows: 3, label: "Short description (for search engines)" }));
+    c.appendChild(F(s, "title", { label: "Browser tab title", dflt: (DEF.settings || {}).title }));
+    c.appendChild(F(s, "description", { type: "area", rows: 3, label: "Short description (for search engines)", dflt: (DEF.settings || {}).description }));
     c.appendChild(F(s, "favicon", { type: "image", label: "Tab icon", max: 256, hint: "A small square picture works best." }));
     c.appendChild(E("p", { class: "hint" }, ["Search engines read the title and description. Some apps that make link previews (WhatsApp, LinkedIn) read the original page text only and may not show changes made here."]));
     box.appendChild(c);
