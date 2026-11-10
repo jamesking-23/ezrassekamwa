@@ -2,198 +2,35 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Site editor</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{--ink:#16181d;--mute:#6a707b;--line:#e1e4e9;--bg:#f5f6f8;--card:#fff;--acc:#1f4fd8;--bad:#c62828;--ok:#1b7f3b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,Arial,sans-serif;overflow-x:hidden}
-button,input,textarea{font:inherit;color:inherit}
-.wrap{max-width:960px;margin:0 auto;padding:16px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0 14px;flex-wrap:wrap}
-.top h1{font-size:18px;margin:0}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.tabs button{border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:8px;cursor:pointer}
-.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
-.card h2{margin:0 0 12px;font-size:16px}
-label{display:block;font-size:12px;font-weight:600;color:var(--mute);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.05em}
-input[type=text],input[type=email],input[type=password],textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:#fff}
-textarea{min-height:84px;resize:vertical}
-.btn{border:0;background:var(--acc);color:#fff;padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:600}
-.btn.sec{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:500}
-.btn.bad{background:#fff;color:var(--bad);border:1px solid var(--line)}
-.btn:disabled{opacity:.5;cursor:default}
-.sm{padding:5px 10px;font-size:13px}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.msg{margin:10px 0 0;font-size:14px}.msg.ok{color:var(--ok)}.msg.err{color:var(--bad)}
-.hide{display:none!important}
-.login{max-width:380px;margin:12vh auto 0}
-.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
-.ph{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}
-.ph .im{aspect-ratio:4/5;border-radius:8px;overflow:hidden;background:#ddd;position:relative}
-.ph .im img{width:100%;height:100%;object-fit:cover;display:block}
-.ph .n{position:absolute;left:6px;top:6px;background:rgba(0,0,0,.65);color:#fff;border-radius:6px;font-size:12px;padding:1px 7px}
-.ph .row{margin-top:8px}
-.ph input{margin-top:8px}
-.ph.over{opacity:.35}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
-.modal .box{background:#fff;border-radius:14px;padding:16px;max-width:420px;width:100%;max-height:96vh;overflow:auto}
-.crop{aspect-ratio:4/5;border-radius:10px;overflow:hidden;background:#ddd;touch-action:none;cursor:grab}
-.crop img{width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none}
-input[type=range]{width:100%}
-.item{border:1px solid var(--line);border-radius:10px;padding:10px;margin:10px 0;background:#fafbfc}
-.item .row{justify-content:space-between}
-.hint{color:var(--mute);font-size:13px}
-.save{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:14px 0 6px}
-</style></head><body>
-<div class="wrap">
+<link rel="stylesheet" href="admin.css">
+</head><body>
 
 <div id="login" class="card login hide">
 <h2>Sign in</h2>
-<form id="lf"><label for="em">Email</label><input id="em" type="email" autocomplete="username" required>
-<label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required>
+<form id="lf"><div class="fld"><label for="em">Email</label><input id="em" type="email" autocomplete="username" required></div>
+<div class="fld"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required></div>
 <div style="margin-top:14px"><button class="btn" type="submit">Sign in</button></div><p class="msg err" id="lmsg"></p></form></div>
 
-<div id="app" class="hide">
-<div class="top"><h1>Site editor</h1><div class="row"><a class="btn sec sm" href="./" style="text-decoration:none">View site</a><button class="btn sec sm" id="out">Sign out</button></div></div>
-<div class="tabs" id="tabs"></div>
-
-<section id="t-home">
-<div class="card"><h2>About section</h2><div id="f-about"></div></div>
-<div class="card"><h2>Section 02 — Code as a creative material</h2><div id="f-code"></div></div>
-<div class="card"><h2>Footer</h2><div id="f-footer"></div></div>
-<div class="card"><h2>Hero portrait image</h2>
-<p class="hint">Replaces the large portrait at the top. Note: the current portrait has the name and title built into the picture, so a new image should include any text you want shown.</p>
-<div class="row"><input type="file" id="heroFile" accept="image/*"><button class="btn bad sm" id="heroReset">Reset to original</button></div><p class="msg" id="heroMsg"></p></div>
-<div class="save"><button class="btn" id="saveHome">Save changes</button><span class="msg" id="homeMsg"></span></div>
-</section>
-
-<section id="t-photos" class="hide">
-<div class="card"><h2>Photo notebook</h2>
-<p class="hint">The first 18 photos fill the notebook cards, in this order. Use the arrows (or drag a photo) to reorder, “Crop” to choose which part is shown, “Replace” to swap the picture.</p>
-<div class="row"><input type="file" id="addFile" accept="image/*" multiple><span class="hint" id="count"></span></div></div>
-<div class="photos" id="photos"></div>
-<div class="save"><button class="btn" id="savePhotos">Save photos</button><span class="msg" id="photoMsg"></span></div>
-</section>
-
-<section id="t-resume" class="hide"><div id="f-resume"></div>
-<div class="save"><button class="btn" id="saveResume">Save resume</button><span class="msg" id="resMsg"></span></div></section>
-
-<section id="t-acct" class="hide"><div class="card"><h2>Change password</h2>
-<label for="np">New password (min 8 characters)</label><input id="np" type="password" autocomplete="new-password">
-<div style="margin-top:12px"><button class="btn" id="chpw">Update password</button></div><p class="msg" id="acMsg"></p></div></section>
-</div>
-
 <div id="deny" class="card login hide"><h2>Not authorised</h2><p>This account is not the site owner.</p><button class="btn sec" id="out2">Sign out</button></div>
+
+<div id="app" class="hide pv-on">
+  <div class="top"><h1>Site editor</h1><span class="grow"></span>
+    <button class="btn sec sm" id="pvToggle" type="button">Preview</button>
+    <a class="btn sec sm" href="./" target="_blank" rel="noopener" style="text-decoration:none">View site</a>
+    <button class="btn sec sm" id="out" type="button">Sign out</button></div>
+  <nav class="nav" id="nav"></nav>
+  <main id="main"></main>
+  <aside class="pvpane" id="pvpane">
+    <div class="pvbar"><button class="btn sec sm on" data-w="100%" type="button">Desktop</button><button class="btn sec sm" data-w="820px" type="button">Tablet</button><button class="btn sec sm" data-w="390px" type="button">Phone</button><span class="grow"></span><button class="btn sec sm" id="pvReload" type="button">Reload</button><button class="btn sec sm" id="pvClose" type="button">Close</button></div>
+    <div class="pvwrap"><iframe id="pv" title="Live preview" src="about:blank"></iframe></div>
+  </aside>
+  <div class="bar"><div class="st" id="st">Loading…</div>
+    <button class="btn sec" id="discard" type="button" disabled>Discard changes</button>
+    <button class="btn" id="publish" type="button" disabled>Publish</button></div>
 </div>
 
-<div id="modal" class="modal hide"><div class="box">
-<div class="crop" id="cropBox"><img id="cropImg" alt=""></div>
-<p class="hint">Drag the picture to choose what shows. Use the slider to zoom.</p>
-<label>Zoom</label><input type="range" id="zoom" min="1" max="4" step="0.05">
-<div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn sec" id="cropCancel">Cancel</button><button class="btn" id="cropOk">Done</button></div></div></div>
+<div id="modal" class="modal hide"><div class="box" id="modalBox"></div></div>
 
 <script src="cms.js"></script>
-<script>
-(function(){
-var $=function(i){return document.getElementById(i)};
-var SK='ezra_admin_session',S=null,content={},photos=[],delIds=[];
-function el(t,a,c){var e=document.createElement(t);for(var k in a||{})e.setAttribute(k,a[k]);(c||[]).forEach(function(x){e.appendChild(typeof x==='string'?document.createTextNode(x):x)});return e}
-function say(id,m,ok){var n=$(id);n.textContent=m||'';n.className='msg'+(m?(ok?' ok':' err'):'')}
-/* ---------- auth ---------- */
-function save(){try{localStorage.setItem(SK,JSON.stringify(S))}catch(e){}}
-function setSession(r){S={access:r.access_token,refresh:r.refresh_token,exp:Date.now()+(r.expires_in||3600)*1000-60000};save()}
-function token(){if(S&&Date.now()<S.exp)return Promise.resolve(S.access);
- if(!S)return Promise.reject(new Error('Signed out'));
- return CMS.json('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:S.refresh})}).then(function(r){setSession(r);return S.access})}
-function authed(path,o){return token().then(function(t){o=o||{};o.token=t;return CMS.json(path,o)})}
-function signOut(){S=null;try{localStorage.removeItem(SK)}catch(e){}location.reload()}
-function show(id){['login','app','deny'].forEach(function(x){$(x).classList.toggle('hide',x!==id)})}
-$('lf').addEventListener('submit',function(e){e.preventDefault();say('lmsg','');
- CMS.json('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email:$('em').value.trim(),password:$('pw').value})}).then(function(r){setSession(r);$('pw').value='';boot()}).catch(function(er){say('lmsg',/invalid/i.test(er.message)?'Wrong email or password.':er.message)})});
-$('out').onclick=$('out2').onclick=signOut;
-/* ---------- images ---------- */
-function resize(file,max){return new Promise(function(res,rej){var u=URL.createObjectURL(file),im=new Image();im.onload=function(){var s=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(function(b){b?res(b):rej(new Error('Could not process image'))},'image/jpeg',.86)};im.onerror=function(){rej(new Error('Not a readable image'))};im.src=u})}
-function uuid(){return crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)})}
-function upload(file,max){return resize(file,max||1600).then(function(b){var name=uuid()+'.jpg';return token().then(function(t){return CMS.api('/storage/v1/object/site-media/'+name,{method:'POST',token:t,body:b,timeout:60000,headers:{'Content-Type':'image/jpeg','x-upsert':'false'}})}).then(function(r){if(!r.ok)return r.text().then(function(x){throw new Error('Upload failed: '+x)});return CMS.PUB+name})})}
-/* ---------- generic field editors ---------- */
-function field(obj,key,label,multi){var w=el('div'),i=el(multi?'textarea':'input',multi?{}:{type:'text'});i.value=obj[key]==null?'':obj[key];i.addEventListener('input',function(){obj[key]=i.value});w.appendChild(el('label',{},[label]));w.appendChild(i);return w}
-function fields(box,obj,defs){box.innerHTML='';defs.forEach(function(d){box.appendChild(field(obj,d[0],d[1],d[2]))})}
-/* ---------- home ---------- */
-var ABOUT=[['num','Number'],['label','Label'],['script','Handwritten words'],['title','Heading'],['text','Paragraph',1]];
-var CODE=[['num','Number'],['label','Label'],['title','Heading'],['text','Paragraph',1]];
-var FOOTER=[['heading','Heading'],['lede','Intro text',1],['linkedin','LinkedIn URL'],['whatsapp','WhatsApp number (digits, with country code)'],['email','Email address'],['role','Role line'],['copyright','Copyright line']];
-$('saveHome').onclick=function(){var b=this;b.disabled=true;say('homeMsg','Saving…',1);
- Promise.all(['about','code','footer','hero'].map(function(k){return putContent(k,content[k])})).then(function(){cacheContent();say('homeMsg','Saved. Refresh the site to see it.',1)}).catch(function(e){say('homeMsg',e.message)}).then(function(){b.disabled=false})};
-function putContent(k,v){return authed('/rest/v1/site_content?on_conflict=key',{method:'POST',body:JSON.stringify([{key:k,value:v,updated_at:new Date().toISOString()}]),headers:{Prefer:'resolution=merge-duplicates,return=minimal'}})}
-function cacheContent(){try{localStorage.setItem('ezra_content_v1',JSON.stringify({about:content.about,code:content.code,footer:content.footer,hero:content.hero}))}catch(e){}}
-$('heroFile').onchange=function(){var f=this.files[0];if(!f)return;say('heroMsg','Uploading…',1);upload(f,1800).then(function(u){content.hero={image:u};say('heroMsg','Uploaded. Press “Save changes” to publish.',1)}).catch(function(e){say('heroMsg',e.message)})};
-$('heroReset').onclick=function(){content.hero={image:null};say('heroMsg','Will reset to the original. Press “Save changes”.',1)};
-/* ---------- photos ---------- */
-function norm(p){return{id:p.id||uuid(),url:p.url,caption:p.caption||'',focus_x:p.focus_x==null?50:+p.focus_x,focus_y:p.focus_y==null?22:+p.focus_y,zoom:p.zoom==null?1:+p.zoom}}
-function imgStyle(img,p){img.style.objectPosition=p.focus_x+'% '+p.focus_y+'%';img.style.transformOrigin=p.focus_x+'% '+p.focus_y+'%';img.style.transform=p.zoom>1?'scale('+p.zoom+')':''}
-var dragI=null;
-function drawPhotos(){var box=$('photos');box.innerHTML='';$('count').textContent=photos.length+' photos'+(photos.length>18?' — only the first 18 appear in the notebook':'');
- photos.forEach(function(p,i){var card=el('div',{class:'ph',draggable:'true'});
-  var im=el('div',{class:'im'}),img=el('img',{alt:'',src:p.url});imgStyle(img,p);im.appendChild(img);im.appendChild(el('span',{class:'n'},[String(i+1)]));card.appendChild(im);
-  var cap=el('input',{type:'text',placeholder:'Caption'});cap.value=p.caption;cap.oninput=function(){p.caption=cap.value};card.appendChild(cap);
-  var r1=el('div',{class:'row'});
-  [['↑',function(){mv(i,-1)}],['↓',function(){mv(i,1)}],['Crop',function(){crop(p)}]].forEach(function(a){var b=el('button',{class:'btn sec sm',type:'button'},[a[0]]);b.onclick=a[1];r1.appendChild(b)});card.appendChild(r1);
-  var r2=el('div',{class:'row'}),rb=el('label',{class:'btn sec sm',style:'margin:0;text-transform:none;letter-spacing:0;font-weight:500;color:inherit;cursor:pointer'},['Replace']),rf=el('input',{type:'file',accept:'image/*',class:'hide'});
-  rf.onchange=function(){if(!rf.files[0])return;say('photoMsg','Uploading…',1);upload(rf.files[0]).then(function(u){p.url=u;p.focus_x=50;p.focus_y=22;p.zoom=1;say('photoMsg','',1);drawPhotos()}).catch(function(e){say('photoMsg',e.message)})};rb.appendChild(rf);r2.appendChild(rb);
-  var d=el('button',{class:'btn bad sm',type:'button'},['Delete']);d.onclick=function(){if(confirm('Remove this photo?')){if(p._saved)delIds.push(p.id);photos.splice(i,1);drawPhotos()}};r2.appendChild(d);card.appendChild(r2);
-  card.addEventListener('dragstart',function(e){dragI=i;card.classList.add('over');try{e.dataTransfer.setData('text/plain',String(i))}catch(x){}});
-  card.addEventListener('dragend',function(){card.classList.remove('over')});
-  card.addEventListener('dragover',function(e){e.preventDefault()});
-  card.addEventListener('drop',function(e){e.preventDefault();if(dragI==null||dragI===i)return;var m=photos.splice(dragI,1)[0];photos.splice(i,0,m);dragI=null;drawPhotos()});
-  box.appendChild(card)})}
-function mv(i,d){var j=i+d;if(j<0||j>=photos.length)return;var t=photos[i];photos[i]=photos[j];photos[j]=t;drawPhotos()}
-$('addFile').onchange=function(){var fs=[].slice.call(this.files),inp=this;if(!fs.length)return;say('photoMsg','Uploading '+fs.length+'…',1);
- fs.reduce(function(pr,f){return pr.then(function(){return upload(f).then(function(u){photos.push(norm({url:u}))})})},Promise.resolve()).then(function(){say('photoMsg','',1);inp.value='';drawPhotos()}).catch(function(e){say('photoMsg',e.message);drawPhotos()})};
-var cp=null,drag=null;
-function crop(p){cp=p;var im=$('cropImg');im.src=p.url;imgStyle(im,p);$('zoom').value=p.zoom;$('modal').classList.remove('hide')}
-$('zoom').oninput=function(){cp.zoom=+this.value;imgStyle($('cropImg'),cp)};
-var cb=$('cropBox');
-cb.addEventListener('pointerdown',function(e){drag={x:e.clientX,y:e.clientY,fx:cp.focus_x,fy:cp.focus_y};cb.setPointerCapture(e.pointerId)});
-cb.addEventListener('pointermove',function(e){if(!drag)return;var r=cb.getBoundingClientRect(),k=1/cp.zoom;cp.focus_x=Math.max(0,Math.min(100,drag.fx-(e.clientX-drag.x)/r.width*100*k));cp.focus_y=Math.max(0,Math.min(100,drag.fy-(e.clientY-drag.y)/r.height*100*k));imgStyle($('cropImg'),cp)});
-cb.addEventListener('pointerup',function(){drag=null});
-$('cropOk').onclick=$('cropCancel').onclick=function(){$('modal').classList.add('hide');drawPhotos()};
-$('savePhotos').onclick=function(){var b=this;b.disabled=true;say('photoMsg','Saving…',1);
- var rows=function(off){return photos.map(function(p,i){return{id:p.id,position:off+i+1,url:p.url,caption:p.caption,focus_x:Math.round(p.focus_x*10)/10,focus_y:Math.round(p.focus_y*10)/10,zoom:Math.round(p.zoom*100)/100}})};
- var up=function(off){return photos.length?authed('/rest/v1/photos?on_conflict=id',{method:'POST',body:JSON.stringify(rows(off)),headers:{Prefer:'resolution=merge-duplicates,return=minimal'}}):Promise.resolve()};
- var del=delIds.length?authed('/rest/v1/photos?id=in.('+delIds.join(',')+')',{method:'DELETE'}):Promise.resolve();
- del.then(function(){return up(1000)}).then(function(){return up(0)}).then(function(){delIds=[];photos.forEach(function(p){p._saved=true});
-  try{localStorage.setItem('ezra_photos_v1',JSON.stringify(photos.map(function(p){return{url:p.url,fx:p.focus_x,fy:p.focus_y,zoom:p.zoom}})))}catch(e){}say('photoMsg','Saved. Refresh the site to see it.',1)}).catch(function(e){say('photoMsg',e.message)}).then(function(){b.disabled=false})};
-/* ---------- resume ---------- */
-var RES_TOP=[['name','Name'],['headline','Headline'],['location','Location'],['phone','Phone (separate numbers with “ / ”)'],['email','Email'],['linkedin','LinkedIn URL'],['membership','Membership line'],['profile','Professional profile',1],['note','Closing note',1]];
-var RES_LISTS=[['education','Academic qualifications',[['title','Qualification'],['org','Institution'],['period','Period']],{title:'',org:'',period:''}],
- ['memberships','Professional membership',[['title','Title'],['detail','Detail']],{title:'',detail:''}],
- ['experience','Internship experience',[['role','Role'],['org','Organisation'],['place','Place'],['period','Period'],['bullets','Bullet points (one per line)',1]],{role:'',org:'',place:'',period:'',bullets:[]}],
- ['skills','Skills',[['name','Skill'],['level','Level']],{name:'',level:''}],
- ['languages','Languages',[['name','Language'],['level','Level']],{name:'',level:''}],
- ['referees','Referees',[['name','Name'],['role','Role'],['contact','Contact (optional)']],{name:'',role:'',contact:''}]];
-function drawResume(){var R=content.resume,box=$('f-resume');box.innerHTML='';
- var c=el('div',{class:'card'},[el('h2',{},['Heading details'])]);var inner=el('div');fields(inner,R,RES_TOP);c.appendChild(inner);box.appendChild(c);
- RES_LISTS.forEach(function(L){var key=L[0];R[key]=R[key]||[];var card=el('div',{class:'card'},[el('h2',{},[L[1]])]);
-  R[key].forEach(function(it,i){var item=el('div',{class:'item'});
-   L[2].forEach(function(d){if(d[0]==='bullets'){var w=el('div',{},[el('label',{},[d[1]])]),t=el('textarea');t.value=(it.bullets||[]).join('\n');t.oninput=function(){it.bullets=t.value.split('\n').map(function(x){return x.trim()}).filter(Boolean)};w.appendChild(t);item.appendChild(w)}else item.appendChild(field(it,d[0],d[1],d[2]))});
-   var r=el('div',{class:'row',style:'margin-top:10px;justify-content:flex-start'});
-   [['↑',-1],['↓',1]].forEach(function(a){var b=el('button',{class:'btn sec sm',type:'button'},[a[0]]);b.onclick=function(){var j=i+a[1];if(j<0||j>=R[key].length)return;var t=R[key][i];R[key][i]=R[key][j];R[key][j]=t;drawResume()};r.appendChild(b)});
-   var d=el('button',{class:'btn bad sm',type:'button'},['Remove']);d.onclick=function(){R[key].splice(i,1);drawResume()};r.appendChild(d);item.appendChild(r);card.appendChild(item)});
-  var add=el('button',{class:'btn sec sm',type:'button'},['+ Add']);add.onclick=function(){R[key].push(JSON.parse(JSON.stringify(L[3])));drawResume()};card.appendChild(add);box.appendChild(card)})}
-$('saveResume').onclick=function(){var b=this;b.disabled=true;say('resMsg','Saving…',1);putContent('resume',content.resume).then(function(){try{localStorage.setItem('ezra_resume_v1',JSON.stringify(content.resume))}catch(e){}say('resMsg','Saved.',1)}).catch(function(e){say('resMsg',e.message)}).then(function(){b.disabled=false})};
-/* ---------- account ---------- */
-$('chpw').onclick=function(){var p=$('np').value;if(p.length<8)return say('acMsg','Use at least 8 characters.');authed('/auth/v1/user',{method:'PUT',body:JSON.stringify({password:p})}).then(function(){$('np').value='';say('acMsg','Password updated.',1)}).catch(function(e){say('acMsg',e.message)})};
-/* ---------- tabs / boot ---------- */
-var TABS=[['home','Home & footer'],['photos','Photos'],['resume','Resume'],['acct','Account']];
-TABS.forEach(function(t,i){var b=el('button',{type:'button'},[t[1]]);b.onclick=function(){[].forEach.call($('tabs').children,function(x,j){x.classList.toggle('on',j===i)});TABS.forEach(function(u){$('t-'+u[0]).classList.toggle('hide',u[0]!==t[0])})};if(!i)b.className='on';$('tabs').appendChild(b)});
-function boot(){
- authed('/rest/v1/rpc/is_owner',{method:'POST',body:'{}'}).then(function(ok){
-  if(ok!==true){show('deny');return}
-  return CMS.loadPublic().then(function(r){content=r.content||{};
-   content.about=content.about||{};content.footer=content.footer||{};content.code=content.code||{};content.hero=content.hero||{image:null};content.resume=content.resume||{};
-   photos=(r.photos||[]).map(function(p){var n=norm(p);n._saved=true;return n});
-   fields($('f-about'),content.about,ABOUT);fields($('f-code'),content.code,CODE);fields($('f-footer'),content.footer,FOOTER);drawPhotos();drawResume();show('app')})
- }).catch(function(e){if(e.status===401||/Signed out|refresh|JWT|expired/i.test(e.message)){S=null;try{localStorage.removeItem(SK)}catch(x){}show('login')}else{show('login');say('lmsg',e.message)}})}
-try{S=JSON.parse(localStorage.getItem(SK))}catch(e){}
-if(S&&S.refresh)boot();else show('login');
-})();
-</script></body></html>
+<script src="admin.js"></script>
+</body></html>

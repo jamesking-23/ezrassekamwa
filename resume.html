@@ -43,7 +43,7 @@ footer{max-width:980px;margin:0 auto;padding:0 24px 40px;display:flex;justify-co
   .row{grid-template-columns:1fr}.row .p{text-align:left}
 }
 @media print{.bar,footer{display:none}main{padding:0}section.sec{break-inside:avoid}h1.title{font-size:56px}}
-</style></head>
+.dl{display:inline-block;margin-top:18px;padding:9px 20px;border:1px solid currentColor;border-radius:999px;font-size:14px;font-weight:500;text-decoration:none;color:inherit;transition:background .25s,color .25s}.dl:hover,.dl:focus-visible{background:#111214;color:#fff}</style></head>
 <body>
 <header class="bar"><a href="./">&larr; Back to home</a><span>Ezra J.L. Ssekamwa</span></header>
 <main>
@@ -61,6 +61,24 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){retur
 function arr(a){return Array.isArray(a)?a:[]}
 function telLink(n){var d=String(n).replace(/[^\d+]/g,'');if(!d)return null;if(d.charAt(0)==='0')d='+256'+d.slice(1);return 'tel:'+d}
 function sec(title,inner){return inner?'<section class="sec"><h3>'+esc(title)+'</h3><div>'+inner+'</div></section>':''}
+var SECS=[['profile','Professional profile'],['education','Academic qualifications'],['memberships','Professional membership'],['experience','Internship experience'],['skills','Skills'],['languages','Languages'],['referees','Referees']];
+function rich(t){return String(t==null?'':t).split(/\n{2,}/).map(function(p){p=p.trim();if(!p)return '';p=esc(p).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*\n]+)\*/g,'<em>$1</em>').replace(/\[([^\]\n]+)\]\((https?:\/\/[^)\s]+|mailto:[^)\s]+|tel:[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>').replace(/\n/g,'<br>');return '<p style="margin:0 0 .9em">'+p+'</p>'}).join('')}
+function pairs(a){return arr(a).length?'<ul class="pairs">'+arr(a).map(function(s){return '<li><span>'+esc(s.name)+'</span><span>'+esc(s.level)+'</span></li>'}).join('')+'</ul>':''}
+var BODY={
+  profile:function(r){return r.profile?'<p style="margin:0">'+esc(r.profile)+'</p>':''},
+  education:function(r){return arr(r.education).map(function(e){return '<div class="row"><div><div class="t">'+esc(e.title)+'</div><div class="o">'+esc(e.org)+'</div></div><div class="p">'+esc(e.period)+'</div></div>'}).join('')},
+  memberships:function(r){return arr(r.memberships).map(function(m){return '<div class="row"><div><div class="t">'+esc(m.title)+'</div>'+(m.detail?'<div class="o">'+esc(m.detail)+'</div>':'')+'</div></div>'}).join('')},
+  experience:function(r){return arr(r.experience).map(function(j){return '<div class="job"><div class="top"><span class="r">'+esc(j.role)+' \u2014 '+esc(j.org)+'</span><span class="d">'+esc(j.period)+'</span></div>'+(j.place?'<div class="pl">'+esc(j.place)+'</div>':'')+(arr(j.bullets).length?'<ul>'+arr(j.bullets).map(function(b){return '<li>'+esc(b)+'</li>'}).join('')+'</ul>':'')+'</div>'}).join('')},
+  skills:function(r){return pairs(r.skills)},
+  languages:function(r){return pairs(r.languages)},
+  referees:function(r){return arr(r.referees).length?'<div class="refs">'+arr(r.referees).map(function(p){return '<div><b>'+esc(p.name)+'</b><span>'+esc(p.role)+'</span>'+(p.contact?'<span>'+esc(p.contact)+'</span>':'')+'</div>'}).join('')+'</div>'+(arr(r.referees).some(function(p){return !p.contact})?'<p class="note" style="margin-top:14px">Referee contact details available on request.</p>':''):''}
+};
+function layoutOf(r){
+  var l=arr(r.layout).filter(function(x){return x&&typeof x.id==='string'}),seen={};
+  l.forEach(function(x){seen[x.id]=1});
+  SECS.forEach(function(s){if(!seen[s[0]])l.push({id:s[0],title:s[1],show:true})});
+  return l;
+}
 function render(r){
   r=r||DEFAULT;var c=[];
   if(r.location)c.push('<li class="m">'+esc(r.location)+'</li>');
@@ -68,15 +86,18 @@ function render(r){
   if(r.email&&/^[^\s@<>"]+@[^\s@<>"]+$/.test(r.email))c.push('<li><a href="mailto:'+esc(r.email)+'">'+esc(r.email)+'</a></li>');
   var li=CMS.safeHref(r.linkedin);if(li)c.push('<li><a href="'+esc(li)+'" target="_blank" rel="noopener">LinkedIn</a></li>');
   if(r.membership)c.push('<li class="m">'+esc(r.membership)+'</li>');
-  var h='<div class="who"><h2>'+esc(r.name)+'</h2>'+(r.headline?'<p class="hl">'+esc(r.headline)+'</p>':'')+'<ul class="contact">'+c.join('')+'</ul></div>';
-  h+=sec('Professional profile',r.profile?'<p style="margin:0">'+esc(r.profile)+'</p>':'');
-  h+=sec('Academic qualifications',arr(r.education).map(function(e){return '<div class="row"><div><div class="t">'+esc(e.title)+'</div><div class="o">'+esc(e.org)+'</div></div><div class="p">'+esc(e.period)+'</div></div>'}).join(''));
-  h+=sec('Professional membership',arr(r.memberships).map(function(m){return '<div class="row"><div><div class="t">'+esc(m.title)+'</div>'+(m.detail?'<div class="o">'+esc(m.detail)+'</div>':'')+'</div></div>'}).join(''));
-  h+=sec('Internship experience',arr(r.experience).map(function(j){return '<div class="job"><div class="top"><span class="r">'+esc(j.role)+' \u2014 '+esc(j.org)+'</span><span class="d">'+esc(j.period)+'</span></div>'+(j.place?'<div class="pl">'+esc(j.place)+'</div>':'')+(arr(j.bullets).length?'<ul>'+arr(j.bullets).map(function(b){return '<li>'+esc(b)+'</li>'}).join('')+'</ul>':'')+'</div>'}).join(''));
-  h+=sec('Skills',arr(r.skills).length?'<ul class="pairs">'+arr(r.skills).map(function(s){return '<li><span>'+esc(s.name)+'</span><span>'+esc(s.level)+'</span></li>'}).join('')+'</ul>':'');
-  h+=sec('Languages',arr(r.languages).length?'<ul class="pairs">'+arr(r.languages).map(function(s){return '<li><span>'+esc(s.name)+'</span><span>'+esc(s.level)+'</span></li>'}).join('')+'</ul>':'');
-  h+=sec('Referees',arr(r.referees).length?'<div class="refs">'+arr(r.referees).map(function(p){return '<div><b>'+esc(p.name)+'</b><span>'+esc(p.role)+'</span>'+(p.contact?'<span>'+esc(p.contact)+'</span>':'')+'</div>'}).join('')+'</div>'+(arr(r.referees).some(function(p){return !p.contact})?'<p class="note" style="margin-top:14px">Referee contact details available on request.</p>':''):'');
+  var pdf=typeof r.pdf==='string'&&r.pdf.indexOf(CMS.PUB)===0&&/\.pdf$/i.test(r.pdf)?r.pdf:null;
+  var h='<div class="who"><h2>'+esc(r.name)+'</h2>'+(r.headline?'<p class="hl">'+esc(r.headline)+'</p>':'')+'<ul class="contact">'+c.join('')+'</ul>'
+    +(pdf?'<a class="dl" href="'+esc(pdf)+'" target="_blank" rel="noopener">'+esc(r.pdf_label||'Download PDF')+'</a>':'')+'</div>';
+  layoutOf(r).forEach(function(x){
+    if(x.show===false)return;
+    var title=x.title||(SECS.filter(function(s){return s[0]===x.id})[0]||[0,''])[1];
+    var inner=x.custom?rich(x.text):(BODY[x.id]?BODY[x.id](r):'');
+    h+=sec(title,inner);
+  });
   if(r.note)h+='<p class="note">'+esc(r.note)+'</p>';
+  var t=document.querySelector('h1.title');if(t)t.textContent=r.title||'Resume';
+  document.title=(r.title||'Resume')+' \u2014 '+(r.name||'');
   return h;
 }
 var app=document.getElementById('app');

@@ -4,6 +4,7 @@
 (function () {
   "use strict";
   if (!("IntersectionObserver" in window)) return;       // old browser: leave everything visible
+  if (/[?&]preview=1\b/.test(location.search)) return;  // inside the editor preview: no replaying animations while typing
 
   // Which existing elements reveal, in what order. [selector, kind, delay ms, per-item stagger ms]
   var GROUPS = [
@@ -44,13 +45,17 @@
     });
   }
 
-  function prep(g) {
-    var sec = document.querySelector(g.sel);
+  // Sections added in the editor ("blocks")
+  var BLOCK = [[".cb-label", "q", 0], [".cb-title", "h", 120], [".cb-media", "p", 120], [".cb-text", "p", 240],
+               [".cb-quote", "h", 120], [".cb-btns", "p", 380],
+               [".cb-card,.cb-list li,.cb-stats>div,.cb-gallery figure", "c", 460, 110]];
+
+  function prep(sec, items) {
     if (!sec || sec.__mo) return;
     sec.__mo = 1;
     if (sec.getBoundingClientRect().bottom < 0) return;   // already scrolled past (e.g. reload mid-page): no replay
     try {
-      g.items.forEach(function (it) {
+      items.forEach(function (it) {
         sec.querySelectorAll(it[0]).forEach(function (el, i) {
           el.setAttribute("data-mo", "pre");
           el.setAttribute("data-mo-k", it[1]);
@@ -63,7 +68,10 @@
     }
   }
 
-  function scan() { GROUPS.forEach(prep); }
+  function scan() {
+    GROUPS.forEach(function (g) { prep(document.querySelector(g.sel), g.items); });
+    document.querySelectorAll(".cb:not(.cbt-spacer)").forEach(function (s) { prep(s, BLOCK); });
+  }
 
   // The sections are injected after Framer hydrates, so watch for them (cheap id lookups).
   new MutationObserver(scan).observe(document.documentElement, { childList: true, subtree: true });
